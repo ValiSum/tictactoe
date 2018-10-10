@@ -10,6 +10,16 @@ function Square(props) {
   );
 }
 
+function SortBtn(props) {
+  return (
+    <div>
+      <button className="sort-btn" onClick={ () => props.onClick() }>
+        Sort
+      </button>
+    </div>
+  );
+}
+
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -100,6 +110,7 @@ class Game extends React.Component {
       }],
       position: [{x: null, y: null}],
       stepNumber: 0,
+      sort: false,
       xIsNext: true
     }
   }
@@ -133,14 +144,25 @@ class Game extends React.Component {
     });
   }
 
+  handleSortClick() {
+    this.setState({
+      sort: !this.state.sort
+    });
+  }
+
   render() {
     const history = this.state.history;
     const pos = this.state.position;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     const stepNumber = this.state.stepNumber;
+    const sort = this.state.sort;
 
     const moves = history.map((squares, step) => {
+
+      if (sort) {
+        step = (history.length - 1) - step;
+      }
 
       let selected;
       if (step === stepNumber) {
@@ -172,6 +194,9 @@ class Game extends React.Component {
           <Board
             squares= { current.squares }
             onClick={ (i) => this.handleClick(i) }
+          />
+          <SortBtn
+            onClick={ () => this.handleSortClick() }
           />
         </div>
         <div className="game-info">
